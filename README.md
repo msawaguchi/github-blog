@@ -1,6 +1,32 @@
+# Github Blog
+
+<p align="center">
+  <img src="src/assets/github-blog.gif">
+</p>
+
+## How to run
+
+Clone the repo:
+```
+git clone https://github.com/msawaguchi/github-blog.git
+```
+Install dependencies:
+
+```
+npm i
+```
+
+Run Application:
+
+```
+npm run dev
+```
+
+---
+
+
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
 

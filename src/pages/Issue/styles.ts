@@ -21,7 +21,8 @@ export const HeaderCardContainer = styled.div`
   z-index: 1;
 
   display: flex;
-  gap: 2.5rem;
+  flex-direction: column;
+  gap: 1.5rem;
 
   img {
     width: 120px;
