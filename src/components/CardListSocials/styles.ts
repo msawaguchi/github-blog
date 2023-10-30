@@ -14,7 +14,7 @@ export const CardListSocialsContainer = styled.div`
     }
   }
 
-  div {
+  a {
     display: flex;
     align-items: center;
 

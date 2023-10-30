@@ -15,6 +15,11 @@ export const PostCardContainer = styled.div`
     h2 {
       gap: 2rem;
       flex: 4;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     small {

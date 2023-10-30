@@ -18,8 +18,16 @@ interface GithubUser {
   html_url: string
 }
 
+interface Issue {
+  title: string
+  body: string
+  number: number
+}
+
 interface GithubInfosContext {
   user: GithubUser | null
+  issues: Issue[] | null
+  totalCount: number | null
 }
 
 interface GithubInfoProviderProps {
@@ -30,6 +38,8 @@ export const GithubInfoContext = createContext({} as GithubInfosContext)
 
 export function GithubInfoProvider({ children }: GithubInfoProviderProps) {
   const [user, setUser] = useState<GithubUser | null>(null)
+  const [issues, setIssues] = useState<Issue[] | null>([])
+  const [totalCount, setTotalCount] = useState(0)
 
   const fetchGithubUser = useCallback(async () => {
     const response = await api.get('users/msawaguchi')
@@ -54,26 +64,14 @@ export function GithubInfoProvider({ children }: GithubInfoProviderProps) {
 
   const fetchGithubRepo = useCallback(async () => {
     const response = await api.get(
-      'users/search/issues/repo:msawaguchi/github-blog',
+      '/search/issues?q=repo:msawaguchi/github-blog',
     )
 
-    // if (response.data) {
-    //   const { name, login, followers, company, bio, avatar_url, html_url } =
-    //     response.data
-
-    //   const githubUser = {
-    //     name,
-    //     login,
-    //     followers,
-    //     company,
-    //     bio,
-    //     avatar_url,
-    //     html_url,
-    //   }
-
-    //   setUser(githubUser)
-    // }
-    console.log(response)
+    if (response.data) {
+      const { total_count, items } = response.data
+      setIssues(items)
+      setTotalCount(total_count)
+    }
   }, [])
 
   useEffect(() => {
@@ -82,7 +80,7 @@ export function GithubInfoProvider({ children }: GithubInfoProviderProps) {
   }, [fetchGithubUser, fetchGithubRepo])
 
   return (
-    <GithubInfoContext.Provider value={{ user }}>
+    <GithubInfoContext.Provider value={{ user, issues, totalCount }}>
       {children}
     </GithubInfoContext.Provider>
   )
