@@ -5,7 +5,7 @@ import {
   FaUpRightFromSquare,
   FaFaceSadTear,
 } from 'react-icons/fa6'
-import { useContext } from 'react'
+import { useContextSelector } from 'use-context-selector'
 
 import { HeaderCardContainer, CardProfileInfo } from './styles'
 
@@ -14,7 +14,9 @@ import { CardHeader } from '../../../../components/CardHeader'
 import { GithubInfoContext } from '../../../../contexts/GithubInfoContexts'
 
 export function HeaderCard() {
-  const { user } = useContext(GithubInfoContext)
+  const user = useContextSelector(GithubInfoContext, (context) => {
+    return context.user
+  })
 
   if (!user) {
     return (
@@ -42,21 +44,20 @@ export function HeaderCard() {
         </CardHeader>
         <p>{user?.bio}</p>
         <CardListSocial>
-          <div>
+          <a href={user?.html_url}>
             <FaGithub />
             <span>{user?.login}</span>
-          </div>
+          </a>
           {user?.company && (
-            <div>
+            <a href={user?.html_url}>
               <FaBuilding />
               <span>{user?.company}</span>
-            </div>
+            </a>
           )}
-
-          <div>
+          <a href={user?.html_url}>
             <FaUserGroup />
             <span>{user?.followers} followers</span>
-          </div>
+          </a>
         </CardListSocial>
       </CardProfileInfo>
     </HeaderCardContainer>

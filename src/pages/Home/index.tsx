@@ -1,13 +1,21 @@
 /* eslint-disable camelcase */
 import { Link } from 'react-router-dom'
+import { useContextSelector } from 'use-context-selector'
+
 import { HeaderCard } from './components/HeaderCard'
 import { PostCard } from './components/PostCard'
 import { HomeContainer, MiddleSection, PostListContainer } from './styles'
 import { GithubInfoContext } from '../../contexts/GithubInfoContexts'
-import { useContext } from 'react'
+import { SearchForm } from './components/SearchForm'
 
 export function Home() {
-  const { totalCount, issues } = useContext(GithubInfoContext)
+  const issues = useContextSelector(GithubInfoContext, (context) => {
+    return context.issues
+  })
+
+  const totalCount = useContextSelector(GithubInfoContext, (context) => {
+    return context.totalCount
+  })
 
   return (
     <HomeContainer>
@@ -19,7 +27,7 @@ export function Home() {
             {totalCount} post{totalCount > 1 && 's'} (issues)
           </small>
         </div>
-        <input type="text" placeholder="search content" />
+        <SearchForm />
       </MiddleSection>
       <PostListContainer>
         {issues &&

@@ -1,11 +1,6 @@
 /* eslint-disable camelcase */
-import {
-  ReactNode,
-  createContext,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { createContext } from 'use-context-selector'
 import { api } from '../lib/axios'
 
 interface GithubUser {
@@ -27,7 +22,9 @@ interface Issue {
 interface GithubInfosContext {
   user: GithubUser | null
   issues: Issue[] | null
-  totalCount: number | null
+  totalCount: number
+  fetchGithubIssues: () => Promise<void>
+  searchGithubIssues: (query?: string) => Promise<void>
 }
 
 interface GithubInfoProviderProps {
@@ -57,12 +54,11 @@ export function GithubInfoProvider({ children }: GithubInfoProviderProps) {
         avatar_url,
         html_url,
       }
-
       setUser(githubUser)
     }
   }, [])
 
-  const fetchGithubRepo = useCallback(async () => {
+  const fetchGithubIssues = useCallback(async () => {
     const response = await api.get(
       '/search/issues?q=repo:msawaguchi/github-blog',
     )
@@ -74,13 +70,33 @@ export function GithubInfoProvider({ children }: GithubInfoProviderProps) {
     }
   }, [])
 
+  const searchGithubIssues = async (query?: string) => {
+    const response = await api.get(
+      `/search/issues?q=${query}%20repo:msawaguchi/github-blog`,
+    )
+
+    if (response.data) {
+      const { total_count, items } = response.data
+      setIssues(items)
+      setTotalCount(total_count)
+    }
+  }
+
   useEffect(() => {
     fetchGithubUser()
-    fetchGithubRepo()
-  }, [fetchGithubUser, fetchGithubRepo])
+    fetchGithubIssues()
+  }, [fetchGithubUser, fetchGithubIssues])
 
   return (
-    <GithubInfoContext.Provider value={{ user, issues, totalCount }}>
+    <GithubInfoContext.Provider
+      value={{
+        user,
+        issues,
+        totalCount,
+        fetchGithubIssues,
+        searchGithubIssues,
+      }}
+    >
       {children}
     </GithubInfoContext.Provider>
   )

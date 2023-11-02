@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useContextSelector } from 'use-context-selector'
 import Markdown from 'react-markdown'
 import { useParams } from 'react-router-dom'
 import {
@@ -18,8 +19,9 @@ import { GithubInfoContext } from '../../contexts/GithubInfoContexts'
 import { api } from '../../lib/axios'
 
 export function Issue() {
-  const { user } = useContext(GithubInfoContext)
-  const { html_url, login } = user
+  const user = useContextSelector(GithubInfoContext, (context) => {
+    return context.user
+  })
 
   const [mdPost, setMdPost] = useState('')
   const [title, setTitle] = useState('')
@@ -42,7 +44,8 @@ export function Issue() {
         setTitle(title)
         setCommentsUrl(comments_url)
         setIssueUrl(html_url)
-        setDate(created_at)
+        const formattedDate = new Date(created_at)
+        setDate(formattedDate.toLocaleDateString('en-US'))
         setComments(comments)
       }
     }
@@ -73,9 +76,9 @@ export function Issue() {
         </CardHeader>
         <h1>{title}</h1>
         <CardListSocial>
-          <a href={html_url}>
+          <a href={user?.html_url}>
             <FaGithub />
-            <span>{login}</span>
+            <span>{user?.login}</span>
           </a>
           <a href={issueUrl}>
             <FaCalendarDay />
